@@ -120,3 +120,31 @@ export async function deletePost(id: string): Promise<void> {
     throw new Error(error.message);
   }
 }
+
+export async function getPostById(id: string): Promise<Post> {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as Post;
+}
+
+export async function getAllPostsAdmin(): Promise<Post[]> {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as Post[]) || [];
+}
+

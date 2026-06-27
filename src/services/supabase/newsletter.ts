@@ -1,4 +1,5 @@
 import { supabase } from "./client";
+import type { NewsletterSubscriber } from "../../types";
 
 export async function subscribeToNewsletter(email: string): Promise<void> {
   const { error } = await supabase
@@ -13,3 +14,17 @@ export async function subscribeToNewsletter(email: string): Promise<void> {
     throw new Error(error.message);
   }
 }
+
+export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+  const { data, error } = await supabase
+    .from("newsletter_subscribers")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as NewsletterSubscriber[]) || [];
+}
+
